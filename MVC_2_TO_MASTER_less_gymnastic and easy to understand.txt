@@ -1,0 +1,258 @@
+/srv/http/mamps/SCRIPTS SERVEURS/MVC_2/app/config/params.php :
+
+
+<?php
+
+// PARAMÈTRES DE CONNEXION
+define('DB_NAME', "retro_monsters_2025");
+define('DB_HOST', "localhost:8889");
+define('DB_USER', "root");
+define('DB_PASSWORD', "root");
+
+
+
+
+/srv/http/mamps/SCRIPTS SERVEURS/MVC_2/app/controllers/monstersController.php :
+
+<?php
+
+function indexAction(PDO $connexion)
+{
+    include_once '../app/models/monstersModel.php';
+    $monsters = findAll($connexion);
+
+    global $content;
+    ob_start();
+    include '../app/views/monsters/index.php';
+    $content = ob_get_clean();
+}
+
+function showAction(PDO $connexion, int $id)
+{
+    include_once '../app/models/monstersModel.php';
+    $monster = findOneById($connexion, $id);
+
+    global $content;
+    ob_start();
+    include '../app/views/monsters/show.php';
+    $content = ob_get_clean();
+}
+
+
+
+/srv/http/mamps/SCRIPTS SERVEURS/MVC_2/app/models/monstersModel.php :
+
+
+<?php
+
+function findAll(PDO $connexion): array
+{
+    $sql = "SELECT *
+            FROM monsters
+            ORDER BY created_at DESC
+            LIMIT 10;";
+    $rs = $connexion->query($sql);
+    return $rs->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function findOneById(PDO $connexion, int $id): array
+{
+    $sql = "SELECT *
+            FROM monsters
+            WHERE id = $id;";
+    $rs = $connexion->query($sql);
+    return $rs->fetch(PDO::FETCH_ASSOC);
+}
+
+
+
+
+/srv/http/mamps/SCRIPTS SERVEURS/MVC_2/app/routers/index.php :
+
+
+<?php
+
+// ROUTE monsters.show
+// PATTERN: /?monsterID=x
+// CTRL: monstersController
+// ACTION: show
+if (isset($_GET['monsterID'])):
+    include_once '../app/controllers/monstersController.php';
+    showAction($connexion, $_GET['monsterID']);
+
+// ROUTE PAR DEFAUT
+// PATTERN: /
+// CTRL: monstersController
+// ACTION: index
+else:
+    include_once '../app/controllers/monstersController.php';
+    indexAction($connexion);
+endif;
+
+
+
+/srv/http/mamps/SCRIPTS SERVEURS/MVC_2/app/views/monsters/index.php :
+
+<h2>Monsters List</h2>
+<ul>
+    <?php foreach ($monsters as $monster): ?>
+        <li>
+            <a href="?monsterID=<?php echo $monster['id']; ?>">
+                <?php echo $monster['name']; ?>
+            </a>
+        </li>
+    <?php endforeach; ?>
+</ul>
+
+
+
+/srv/http/mamps/SCRIPTS SERVEURS/MVC_2/app/views/monsters/show.php :
+
+
+<h2><?php echo $monster['name']; ?> - ID: <?php echo $monster['id']; ?></h2>
+<ul>
+    <li>PV: <?php echo $monster['pv']; ?></li>
+    <li>Attack: <?php echo $monster['attack']; ?></li>
+    <li>Defense: <?php echo $monster['defense']; ?></li>
+</ul>
+<p><?php echo $monster['description']; ?></p>
+
+
+
+/srv/http/mamps/SCRIPTS SERVEURS/MVC_2/app/views/templates/partials/_footer.php :
+
+
+<footer class="page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
+                <h5 class="white-text">Footer Content</h5>
+                <p class="grey-text text-lighten-4">
+                    You can use rows and columns here to organize your footer content.
+                </p>
+            </div>
+            <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">Links</h5>
+                <ul>
+                    <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
+                    <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
+                    <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+                    <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
+            © 2014 Copyright Text
+            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+        </div>
+    </div>
+</footer>
+
+
+
+
+/srv/http/mamps/SCRIPTS SERVEURS/MVC_2/app/views/templates/partials/_head.php :
+
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RetroMonster</title>
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+
+
+
+/srv/http/mamps/SCRIPTS SERVEURS/MVC_2/app/views/templates/partials/_header.php :
+
+
+<header>
+    <nav>
+        <div class="nav-wrapper container">
+            <a href="#" class="brand-logo">RetroMonsters</a>
+            <ul id="nav-mobile" class="right">
+                <li><a href="">Monsters</a></li>
+                <li><a href="?">Users</a></li>
+                <li><a href="">RetroMonsters Project</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+
+/srv/http/mamps/SCRIPTS SERVEURS/MVC_2/app/views/templates/partials/_main.php :
+
+
+
+<main class="container">
+    <?php echo $content; ?>
+</main>
+
+
+/srv/http/mamps/SCRIPTS SERVEURS/MVC_2/app/views/templates/default.php :
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <?php include '../app/views/templates/partials/_head.php'; ?>
+</head>
+
+<body>
+    <?php include '../app/views/templates/partials/_header.php'; ?>
+
+    <?php include '../app/views/templates/partials/_main.php'; ?>
+
+    <?php include '../app/views/templates/partials/_footer.php'; ?>
+</body>
+
+</html>
+
+
+
+/srv/http/mamps/SCRIPTS SERVEURS/MVC_2/core/connection.php :
+
+
+
+<?php
+
+try {
+    $connexion = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASSWORD);
+} catch (PDOException $e) {
+    echo $e->message;
+    // echo "C'est bien balot mais y a un stuut !";
+}
+
+
+
+
+
+/srv/http/mamps/SCRIPTS SERVEURS/MVC_2/core/init.php :
+
+
+<?php
+
+// Chargement des paramètres
+// Chargement de la connexion
+
+require_once '../app/config/params.php';
+require_once '../core/connection.php';
+
+
+
+/srv/http/mamps/SCRIPTS SERVEURS/MVC_2/public/index.php :
+
+
+<?php
+
+// Chargement de l'init
+require_once '../core/init.php';
+
+// Chargement du router
+require_once '../app/routers/index.php';
+
+// Chargement du template
+require_once '../app/views/templates/default.php';
