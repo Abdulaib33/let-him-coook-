@@ -42,3 +42,25 @@ function insertOne(PDO $connexion, array $data) {
     ]);
 
 }
+
+
+function updateOne(PDO $connexion, array $data) {
+
+    $sql = "UPDATE retro_monsters_2025_1.monsters
+            SET name = :name,
+                pv = :pv,
+                attack = :attack,
+                defense = :defense
+                description = :description
+            WHERE id = :id";
+    $stmt = $connexion->prepare($sql);
+    return $stmt->execute([
+
+        ':id' => $data['id'],
+        ':name' => $data['name'],
+        ':pv' => $data['pv'],
+        ':attack' => $data['attack'],
+        ':defense' => $data['defense'],
+        ':description' => $data['description']
+    ]); 
+}

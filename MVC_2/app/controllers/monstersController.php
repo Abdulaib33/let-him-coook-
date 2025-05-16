@@ -65,3 +65,36 @@ function createAction(PDO $connexion) {
     include "../app/views/monsters/create.php";
     $content = ob_get_clean();
 }
+
+
+function editAction(PDO $connexion, int $id) {
+    include_once "../app/models/monstersModel.php";
+
+
+    if ($_SERVER['REQUEST_METHOD'] === "POST") {
+
+        $data = [
+            'id' => $id,
+            'name' => $_POST['name'] ?? '',
+            'pv' => (int)($_POST['pv'] ?? 0),
+            'attack' => (int)($_POST['attack'] ?? 0),
+            'defense' => (int)($_POST['defense'] ?? 0),
+            'description' => $_POST['description'] ?? ''
+        ];
+
+        updateOne($connexion, $data);
+
+
+        // Redirect to show
+        header('Location: ?page=show&id=' . $id);
+        exit;
+    }
+
+    $monster = findOneById($connexion, $id);
+
+    global $content;
+    ob_start();
+    include "../app/views/monsters/edit.php";
+    $content = ob_get_clean();
+
+}
