@@ -33,3 +33,35 @@ function showAction(PDO $connexion, int $id) {
     include "../app/views/monsters/show.php";
     $content = ob_get_clean();
 }
+
+
+function createAction(PDO $connexion) {
+    include_once "../app/models/monstersModel.php";
+
+
+    // Handle form submission
+    if ($_SERVER['REQUEST_METHOD'] === "POST") {
+
+        $data = [
+            'name' => $_POST['name'] ?? '',
+            'pv' => (int)($_POST['pv'] ?? 0),
+            'attack' => (int) ($_POST['attack'] ?? 0),
+            'defense' => (int) ($_POST['defense'] ?? 0),
+            'description' => $_POST['description'] ?? ''
+        ];
+
+        // Insert into DB
+        insertOne($connexion, $data);
+
+        // Redirect to list
+        header('Location: ?page=list');
+        exit;
+    }
+
+
+    // Show form
+    global $content;
+    ob_start();
+    include "../app/views/monsters/create.php";
+    $content = ob_get_clean();
+}

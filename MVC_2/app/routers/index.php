@@ -19,6 +19,12 @@ elseif (isset($_GET['page']) && $_GET['page'] === 'show' && isset($_GET['id'])) 
     showAction($connexion, (int)$_GET['id']);
 }
 
+// ROUTE: ?page=create
+elseif (isset($_GET['page']) && $_GET['page'] === 'create') {
+    include_once "../app/controllers/monstersController.php";
+    createAction($connexion);
+}
+
 else {
     // Default fallback
     $content = "<h1>404 Not Found</h1>";

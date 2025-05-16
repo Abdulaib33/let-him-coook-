@@ -10,6 +10,7 @@
             </a>
            
         </li>
+        <img src="<?php echo $monster['description'] . $monster['id'] ?>" alt="">
 
     <?php endforeach;?>
 
