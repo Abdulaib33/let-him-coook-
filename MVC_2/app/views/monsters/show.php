@@ -6,4 +6,5 @@
     <li><strong> Defense:</strong> <?php echo $monster['defense'] ?></li>
     <li><strong>Created:</strong> <?php echo $monster['created_at']?></li>
     <li><a href="?page=edit&id=<?php echo $monster['id'] ?>"> ✏️ Edit this monster</a></li>
+    <!-- <li><a href="?page=list">Return to list</a></li> -->
 </ul>
