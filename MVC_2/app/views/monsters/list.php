@@ -1,5 +1,7 @@
 <h1>Monsters List</h1>
 
+<button><a href="?page=create">Create A Monster</a></button>
+
 <ul>
 
     <?php foreach ($monsters as $monster): ?>
